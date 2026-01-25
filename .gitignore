@@ -1,0 +1,81 @@
+# ============================================
+# Frontend (Next.js)
+# ============================================
+frontend/node_modules/
+frontend/.next/
+frontend/out/
+frontend/build/
+frontend/dist/
+frontend/.pnp
+frontend/.pnp.js
+frontend/coverage/
+
+# Frontend logs
+frontend/*.log
+frontend/npm-debug.log*
+frontend/yarn-debug.log*
+frontend/yarn-error.log*
+
+# Frontend environment variables
+frontend/.env
+frontend/.env.local
+frontend/.env.development.local
+frontend/.env.test.local
+frontend/.env.production.local
+
+# ============================================
+# Backend (Python)
+# ============================================
+backend/__pycache__/
+backend/**/__pycache__/
+backend/*.py[cod]
+backend/*$py.class
+backend/*.so
+backend/.Python
+
+# Python virtual environments
+backend/venv/
+backend/env/
+backend/ENV/
+backend/.venv
+
+# Backend environment variables
+backend/.env
+backend/.env.local
+
+# Backend database files
+backend/*.db
+backend/*.sqlite
+backend/*.sqlite3
+
+# Backend temporary/test files
+backend/test_audio.wav
+backend/*.tmp
+backend/*.temp
+
+# ============================================
+# IDE & Editor
+# ============================================
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# ============================================
+# OS Files
+# ============================================
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# ============================================
+# General
+# ============================================
+*.log
+*.tmp
+*.temp
