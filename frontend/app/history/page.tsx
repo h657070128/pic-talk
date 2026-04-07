@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 
 /* ================= Types ================= */
@@ -223,43 +223,39 @@ export default function HistoryPage() {
   const [page, setPage] = useState(1);
   const [loading, setLoading] = useState(true);
 
-  const fetchStats = useCallback(async () => {
-    try {
-      const res = await fetch("http://127.0.0.1:8000/api/user-practice/stats");
-      if (res.ok) {
-        const data: Stats = await res.json();
-        setStats(data);
-      }
-    } catch (err) {
-      console.error("Failed to fetch stats:", err);
-    }
-  }, []);
+  useEffect(() => {
+    let cancelled = false;
 
-  const fetchHistory = useCallback(
-    async (p: number) => {
+    async function loadData() {
       try {
-        const res = await fetch(
-          `http://127.0.0.1:8000/api/user-practice/history?page=${p}&page_size=10`
-        );
-        if (res.ok) {
-          const data: HistoryResponse = await res.json();
-          setHistory(data);
+        const [statsRes, historyRes] = await Promise.all([
+          fetch("http://127.0.0.1:8000/api/user-practice/stats"),
+          fetch(
+            `http://127.0.0.1:8000/api/user-practice/history?page=${page}&page_size=10`
+          ),
+        ]);
+        if (cancelled) return;
+        if (statsRes.ok) {
+          setStats(await statsRes.json());
+        }
+        if (historyRes.ok) {
+          setHistory(await historyRes.json());
         }
       } catch (err) {
-        console.error("Failed to fetch history:", err);
+        console.error("Failed to load data:", err);
+      } finally {
+        if (!cancelled) setLoading(false);
       }
-    },
-    []
-  );
+    }
 
-  useEffect(() => {
-    setLoading(true);
-    Promise.all([fetchStats(), fetchHistory(page)]).finally(() =>
-      setLoading(false)
-    );
-  }, [fetchStats, fetchHistory, page]);
+    loadData();
+    return () => {
+      cancelled = true;
+    };
+  }, [page]);
 
   const goToPage = (p: number) => {
+    setLoading(true);
     setPage(p);
   };
 
