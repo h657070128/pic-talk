@@ -2,6 +2,7 @@
 import "./spinner.css";
 
 import { useEffect, useRef, useState } from "react";
+import Link from "next/link";
 
 /* ================= 接口类型定义 ================= */
 
@@ -180,7 +181,12 @@ export default function Home() {
         </div>
       )}
       <main style={styles.container}>
-        <h1>🗣 Pic-Talk</h1>
+        <div style={styles.header}>
+          <h1>🗣 Pic-Talk</h1>
+          <Link href="/history" style={styles.historyLink}>
+            📊 Practice History
+          </Link>
+        </div>
 
         {loading && <p>Loading...</p>}
 
@@ -279,6 +285,25 @@ const styles: Record<string, React.CSSProperties> = {
     padding: "20px",
     fontFamily: "Arial",
     textAlign: "center",
+  },
+
+  header: {
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: "16px",
+    flexWrap: "wrap" as const,
+    marginBottom: "8px",
+  },
+
+  historyLink: {
+    fontSize: "14px",
+    color: "#2196f3",
+    textDecoration: "none",
+    fontWeight: 500,
+    padding: "6px 14px",
+    border: "1px solid #2196f3",
+    borderRadius: "20px",
   },
 
   card: {
