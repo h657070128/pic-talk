@@ -1,12 +1,18 @@
 from fastapi import FastAPI
 from api.image_controller import router as image_router
 from api.user_practice_controller import router as user_practice_router
+from api.auth_controller import router as auth_router
+from api.user_controller import router as user_controller_router
+from api.subscription_controller import router as subscription_router
 from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI(title="AI English Speaking Backend")
 
 app.include_router(image_router, prefix="/api/image", tags=["Image Task"])
 app.include_router(user_practice_router, prefix="/api/user-practice", tags=["User Practice"])
+app.include_router(auth_router, prefix="/api/auth", tags=["Auth"])
+app.include_router(user_controller_router, prefix="/api/user", tags=["User"])
+app.include_router(subscription_router, prefix="/api/subscription", tags=["Subscription"])
 
 app.add_middleware(
     CORSMiddleware,
@@ -15,6 +21,7 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
 
 @app.get("/")
 def health_check():

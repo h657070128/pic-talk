@@ -2,6 +2,8 @@
 import "./spinner.css";
 
 import { useEffect, useRef, useState } from "react";
+import { apiFetch } from "@/app/lib/api";
+import { useAuth } from "@/app/components/AuthProvider";
 
 /* ================= 接口类型定义 ================= */
 
@@ -35,6 +37,7 @@ interface PracticeResult {
 /* ================= 主组件 ================= */
 
 export default function Home() {
+  const { user, loading: authLoading } = useAuth();
   const [task, setTask] = useState<Task | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const [analyzing, setAnalyzing] = useState<boolean>(false);
@@ -54,11 +57,16 @@ export default function Home() {
     setResult(null);
 
     try {
-      const res = await fetch(
-        "http://127.0.0.1:8000/api/image/get_random_task"
-      );
+      const res = await apiFetch("/api/image/get_random_task");
 
       if (!res.ok) {
+        if (res.status === 401) {
+          return;
+        }
+        if (res.status === 429) {
+          alert("Daily free limit reached. Subscribe to continue.");
+          return;
+        }
         throw new Error("Fetch task failed");
       }
 
@@ -76,8 +84,10 @@ export default function Home() {
   /* ================= 初始化 ================= */
 
   useEffect(() => {
-    fetchTask();
-  }, []);
+    if (!authLoading && user) {
+      fetchTask();
+    }
+  }, [authLoading, user]);
 
   /* ================= 开始录音 ================= */
 
@@ -144,15 +154,17 @@ export default function Home() {
     formData.append("task_id", String(task.id));
 
     try {
-      const res = await fetch(
-        "http://127.0.0.1:8000/api/user-practice/evaluate",
-        {
-          method: "POST",
-          body: formData,
-        }
-      );
+      const res = await apiFetch("/api/user-practice/evaluate", {
+        method: "POST",
+        body: formData,
+      });
 
       if (!res.ok) {
+        if (res.status === 429) {
+          alert("Daily free limit reached. Subscribe to continue.");
+          setLoading(false);
+          return;
+        }
         throw new Error("Upload failed");
       }
 
@@ -169,6 +181,23 @@ export default function Home() {
 
   /* ================= UI ================= */
 
+  if (authLoading) {
+    return (
+      <div style={{ textAlign: "center", padding: "60px" }}>Loading...</div>
+    );
+  }
+
+  if (!user) {
+    return (
+      <main style={styles.container}>
+        <h1>Pic-Talk</h1>
+        <p style={{ color: "#6b7280", marginTop: "16px" }}>
+          AI-powered English speaking practice. Please log in to start.
+        </p>
+      </main>
+    );
+  }
+
   return (
     <>
       {analyzing && (
@@ -180,7 +209,7 @@ export default function Home() {
         </div>
       )}
       <main style={styles.container}>
-        <h1>🗣 Pic-Talk</h1>
+        <h1>Pic-Talk</h1>
 
         {loading && <p>Loading...</p>}
 
@@ -201,23 +230,23 @@ export default function Home() {
         <div style={styles.controls}>
           {!recording ? (
             <button onClick={startRecording} style={styles.btn}>
-              🎤 Start Recording
+              Start Recording
             </button>
           ) : (
             <button onClick={stopRecording} style={styles.btnStop}>
-              ⏹ Stop Recording
+              Stop Recording
             </button>
           )}
 
           <button onClick={fetchTask} style={styles.btnNext}>
-            🔄 Next Image
+            Next Image
           </button>
         </div>
 
         {/* ASR text */}
         {result && result.asr_text && (
           <div style={styles.feedback}>
-            <h2>📊 ASR text</h2>
+            <h2>ASR text</h2>
 
             <p>
               {result.asr_text}
@@ -228,7 +257,7 @@ export default function Home() {
         {/* AI 反馈 */}
         {result && result.ai_feedback && (
           <div style={styles.feedback}>
-            <h2>📊 AI Feedback</h2>
+            <h2>AI Feedback</h2>
 
             <p>
               <b>Relevance:</b>{" "}
@@ -240,28 +269,28 @@ export default function Home() {
               {result.ai_feedback.fluency_score}
             </p>
 
-            <h3>✅ Strengths</h3>
+            <h3>Strengths</h3>
             <ul>
               {result.ai_feedback.strengths.map((s, i) => (
                 <li key={i}>{s}</li>
               ))}
             </ul>
 
-            <h3>⚠ Issues</h3>
+            <h3>Issues</h3>
             <ul>
               {result.ai_feedback.issues.map((s, i) => (
                 <li key={i}>{s}</li>
               ))}
             </ul>
 
-            <h3>💡 Suggestions</h3>
+            <h3>Suggestions</h3>
             <ul>
               {result.ai_feedback.suggestions.map((s, i) => (
                 <li key={i}>{s}</li>
               ))}
             </ul>
 
-            <h3>📝 Summary</h3>
+            <h3>Summary</h3>
             <p>{result.ai_feedback.summary}</p>
           </div>
         )}
