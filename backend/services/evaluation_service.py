@@ -1,5 +1,4 @@
 class EvaluationService:
-
     def evaluate(self, text: str):
         # mock 的文本分析
         return {
@@ -8,8 +7,8 @@ class EvaluationService:
                 {
                     "issue": "Sentence is too simple",
                     "suggestion": "Try to add more details",
-                    "example": "The man is cooking food happily in a bright kitchen."
+                    "example": "The man is cooking food happily in a bright kitchen.",
                 }
             ],
-            "encouragement": "Good job! Keep practicing."
+            "encouragement": "Good job! Keep practicing.",
         }

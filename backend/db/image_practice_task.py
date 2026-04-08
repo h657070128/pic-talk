@@ -1,7 +1,7 @@
-# models/image_task.py
 from sqlalchemy import Column, BigInteger, String, Text, DateTime, JSON
 from sqlalchemy.sql import func
 from db.database import Base
+
 
 class ImagePracticeTask(Base):
     __tablename__ = "image_practice_task"

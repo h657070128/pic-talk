@@ -11,6 +11,10 @@ if str(backend_dir) not in sys.path:
 from db.database import Base, engine
 from db.image_practice_task import ImagePracticeTask
 from db.user_practice_record import UserPracticeRecord
+from db.user import User
+from db.subscription_plan import SubscriptionPlan
+from db.user_subscription import UserSubscription
+from db.payment_record import PaymentRecord
 
 def init_db():
     """Create all database tables"""

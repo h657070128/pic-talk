@@ -1,9 +1,14 @@
 fastapi
 uvicorn
-pydantic
+pydantic[email]
 httpx
 python-multipart
 python-dotenv
 sounddevice
 scipy
 dashscope
+sqlalchemy
+pymysql
+oss2
+PyJWT>=2.8.0
+bcrypt>=4.0.0

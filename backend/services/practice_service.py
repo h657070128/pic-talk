@@ -1,5 +1,5 @@
 from fastapi import File, UploadFile
-from typing import Dict
+from typing import Dict, Optional
 from models.asr_client import ASRClient
 from models.qwen_client import QwenClient
 from services.practice_record_repository import PracticeRecordRepository
@@ -15,7 +15,7 @@ class PracticeService:
         self.qwen_client = QwenClient()
         self.oss_client = OSSClient()
 
-    def submit_practice(self, task, audio_file: UploadFile = File(...)):
+    def submit_practice(self, task, audio_file: UploadFile = File(...), user_id: Optional[int] = None):
 
         audio_path_obj = self.save_recording(audio_file)
 
@@ -41,7 +41,8 @@ class PracticeService:
             ai_feedback=result,
             relevance_score=result["relevance_score"],
             fluency_score=result["fluency_score"],
-            user_audio_url=audio_path_obj["audio_url"]
+            user_audio_url=audio_path_obj["audio_url"],
+            user_id=user_id,
         )
 
         return practice_record
