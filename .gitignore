@@ -9,6 +9,7 @@ frontend/dist/
 frontend/.pnp
 frontend/.pnp.js
 frontend/coverage/
+frontend/tsconfig.tsbuildinfo
 
 # Frontend logs
 frontend/*.log

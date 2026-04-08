@@ -7,3 +7,5 @@ python-dotenv
 sounddevice
 scipy
 dashscope
+sqlalchemy
+pymysql
